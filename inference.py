@@ -73,7 +73,7 @@ def main():
     lx, ly, rx, ry = int(lx), int(ly), int(rx), int(ry)
     oy1, oy2, ox1, ox2 = cly+ly, min(cly+ry, full_frames[0].shape[0]), clx+lx, min(clx+rx, full_frames[0].shape[1])
     # original_size = (ox2 - ox1, oy2 - oy1)
-    frames_pil = [Image.fromarray(cv2.resize(frame,(256,256))) for frame in full_frames_RGB]
+    frames_pil = [Image.fromarray(cv2.resize(frame,(512,512))) for frame in full_frames_RGB]
 
     # get the landmark according to the detected face.
     if not os.path.isfile('temp/'+base_name+'_landmarks.txt') or args.re_preprocess:
@@ -280,7 +280,7 @@ def datagen(frames, mels, full_frames, frames_pil, cox):
     img_batch, mel_batch, frame_batch, coords_batch, ref_batch, full_frame_batch = [], [], [], [], [], []
     base_name = args.face.split('/')[-1]
     refs = []
-    image_size = 256 
+    image_size = 512 
 
     # original frames
     kp_extractor = KeypointExtractor()
@@ -296,7 +296,7 @@ def datagen(frames, mels, full_frames, frames_pil, cox):
 
     for inverse_transform, crop, full_frame, face_det in zip(inverse_transforms, crops, full_frames, face_det_results):
         imc_pil = paste_image(inverse_transform, crop, Image.fromarray(
-            cv2.resize(full_frame[int(oy1):int(oy2), int(ox1):int(ox2)], (256, 256))))
+            cv2.resize(full_frame[int(oy1):int(oy2), int(ox1):int(ox2)], (512, 512))))
 
         ff = full_frame.copy()
         ff[int(oy1):int(oy2), int(ox1):int(ox2)] = cv2.resize(np.array(imc_pil.convert('RGB')), (ox2 - ox1, oy2 - oy1))
