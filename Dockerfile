@@ -11,7 +11,11 @@ COPY . /home/workspace/video-retalking-main/
 RUN conda create -n video_retalking python=3.8 && \
     echo "source activate video_retalking" > ~/.bashrc && \
     /bin/bash -c "source ~/.bashrc"
-    
+
+# 定义代理参数
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+
 # 暂时禁用 nvidia 源
 RUN sed -i '/^deb.*nvidia/d' /etc/apt/sources.list.d/* && \
     apt update && \
