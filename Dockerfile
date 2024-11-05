@@ -16,6 +16,10 @@ RUN conda create -n video_retalking python=3.8 && \
 ARG HTTP_PROXY
 ARG HTTPS_PROXY
 
+# 通过环境变量传递代理信息
+ENV HTTP_PROXY=${HTTP_PROXY}
+ENV HTTPS_PROXY=${HTTPS_PROXY}
+
 # 暂时禁用 nvidia 源
 RUN sed -i '/^deb.*nvidia/d' /etc/apt/sources.list.d/* && \
     apt update && \
