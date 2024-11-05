@@ -26,9 +26,9 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/*
 
 # 激活 conda 环境并安装项目依赖
-RUN conda activate video_retalking && \
-    conda install -c conda-forge ffmpeg && \
-    pip install -r requirements.txt
+RUN conda create -n video_retalking python=3.8 && \
+    echo "source activate video_retalking" >> ~/.bashrc && \
+    /bin/bash -c "source ~/.bashrc && conda activate video_retalking && conda install -c conda-forge ffmpeg && pip install -r requirements.txt"
 
 # 复制 checkpoints 文件夹（假设您本地已经准备好）
 COPY checkpoints /home/workspace/video-retalking-main/checkpoints/
