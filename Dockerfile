@@ -11,6 +11,13 @@ COPY . /home/workspace/video-retalking-main/
 RUN conda create -n video_retalking python=3.8 && \
     echo "source activate video_retalking" > ~/.bashrc && \
     /bin/bash -c "source ~/.bashrc"
+    
+# 暂时禁用 nvidia 源
+RUN sed -i '/^deb.*nvidia/d' /etc/apt/sources.list.d/* && \
+    apt update && \
+    apt install -y cmake libgl1-mesa-glx && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # 安装必要的软件包
 RUN apt update && \
