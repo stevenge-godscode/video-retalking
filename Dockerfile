@@ -25,8 +25,9 @@ RUN sed -i '/^deb.*nvidia/d' /etc/apt/sources.list.d/* && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
-# 创建 Python 3.8 环境，安装依赖和项目所需的包
-RUN conda create -n video_retalking python=3.8 && \
+# 初始化 bash shell，并创建和激活 conda 环境
+RUN conda init bash && \
+    conda create -n video_retalking python=3.8 && \
     echo "source activate video_retalking" >> ~/.bashrc && \
     /bin/bash -c "source ~/.bashrc && conda activate video_retalking && \
     conda install -c conda-forge ffmpeg && \
