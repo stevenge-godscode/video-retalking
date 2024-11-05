@@ -7,11 +7,6 @@ WORKDIR /home/workspace/video-retalking-main/
 # 复制当前目录的所有文件到容器中
 COPY . /home/workspace/video-retalking-main/
 
-# 安装 Python 3.8 环境并创建 `video_retalking` 环境
-RUN conda create -n video_retalking python=3.8 && \
-    echo "source activate video_retalking" > ~/.bashrc && \
-    /bin/bash -c "source ~/.bashrc"
-
 # 定义代理参数
 ARG HTTP_PROXY
 ARG HTTPS_PROXY
@@ -20,29 +15,25 @@ ARG HTTPS_PROXY
 ENV HTTP_PROXY=${HTTP_PROXY}
 ENV HTTPS_PROXY=${HTTPS_PROXY}
 
-# 暂时禁用 nvidia 源
+# 设置环境变量以确保 C++ 编译器正确配置
+ENV CXX=g++
+
+# 暂时禁用 nvidia 源，并安装必要的软件包
 RUN sed -i '/^deb.*nvidia/d' /etc/apt/sources.list.d/* && \
     apt update && \
     apt install -y cmake libgl1-mesa-glx && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
-# 安装必要的软件包
-RUN apt update && \
-    apt install -y cmake libgl1-mesa-glx && \
-    apt clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# 激活 conda 环境并安装项目依赖
+# 创建 Python 3.8 环境，安装依赖和项目所需的包
 RUN conda create -n video_retalking python=3.8 && \
     echo "source activate video_retalking" >> ~/.bashrc && \
-    /bin/bash -c "source ~/.bashrc && conda activate video_retalking && conda install -c conda-forge ffmpeg && pip install -r requirements.txt"
+    /bin/bash -c "source ~/.bashrc && conda activate video_retalking && \
+    conda install -c conda-forge ffmpeg && \
+    pip install -r requirements.txt"
 
 # 复制 checkpoints 文件夹（假设您本地已经准备好）
 COPY checkpoints /home/workspace/video-retalking-main/checkpoints/
-
-# 设置环境变量以确保 C++ 编译器正确配置
-ENV CXX=g++
 
 # 设置默认启动命令
 CMD ["bash"]
